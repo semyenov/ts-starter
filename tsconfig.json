@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+    "lib": ["ESNext", "DOM"],
+
+    "declaration": true,
+    "target": "ESNext",
+    "module": "ESNext",
+
+    "strict": true,
+    "resolveJsonModule": true,
+    "resolvePackageJsonExports": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "importHelpers": true,
+    "noResolve": false,
+
+    "outDir": "dist",
+    "rootDir": "./",
+
+    "paths": {
+      "~": ["./src"]
+    }
+  },
+  "include": ["./src/**/*"]
+}
