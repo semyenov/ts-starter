@@ -1,16 +1,19 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+
   "compilerOptions": {
     "moduleResolution": "nodenext",
     "lib": ["ESNext", "DOM"],
 
-    "declaration": true,
+    "declaration": false,
     "target": "ESNext",
     "module": "ESNext",
 
     "strict": true,
     "resolveJsonModule": true,
-    "resolvePackageJsonExports": true,
     "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

@@ -1,49 +1,57 @@
-import { openSync } from 'node:fs'
+import { mkdtemp } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { ConnectionManager, CsvExporter, PluginStore, PuppeteerClient, ScrapeEvent, Scraper, ZipExporter, setLogger } from '@get-set-fetch/scraper'
-import { knex } from 'knex'
-import { destination } from 'pino'
+import scraper from '@get-set-fetch/scraper'
+import { destination, pino } from 'pino'
+import pretty from 'pino-pretty'
 
 const pwd = dirname(fileURLToPath(import.meta.url))
-const logPath = join(pwd, process.env.LOG_FILENAME ?? 'scraping.log')
-const dbPath = join(pwd, process.env.DB_FILENAME ?? 'test.sqlite')
 
-setLogger({ level: 'info' }, destination({
-  dest: logPath,
-  fd: openSync(logPath, 'a+'),
-}))
+const pluginsPath = join(pwd, 'plugins')
+const dataPath = await mkdtemp(join(pwd, '.scraper-'))
 
-const client = new PuppeteerClient({
-  headless: 'new',
-  executablePath: '/usr/bin/chromium',
-  args: [
-    '--disable-gpu',
-    '--disable-dev-shm-usage',
-    '--disable-setuid-sandbox',
-    '--no-first-run',
-    '--no-sandbox',
-    '--no-zygote',
-  ],
+const logDestination = destination({
+  dest: join(dataPath, process.env.LOG_FILENAME ?? 'test.debug.log'),
 })
 
-const conn = new ConnectionManager(knex({
+await scraper.PluginStore.init()
+await scraper.PluginStore.addEntries(pluginsPath)
+
+scraper.setLogger(
+  { base: { dataPath }, level: 'trace' },
+  pino.multistream([
+    {
+      level: 'info',
+      stream: pretty.default(),
+    },
+    {
+      level: 'trace',
+      stream: logDestination,
+    },
+  ]),
+)
+
+const client = new scraper.PuppeteerClient({
+  headless: 'new',
+  executablePath: '/snap/bin/chromium',
+  ignoreHTTPSErrors: true,
+  args: ['--ignore-certificate-errors', '--no-first-run', '--single-process'],
+})
+// const client = scraper.CheerioClient
+
+const conn = new scraper.ConnectionManager({
   client: 'sqlite3',
   useNullAsDefault: true,
   connection: {
-    // filename: ':memory:'
-    filename: dbPath,
+    filename: join(dataPath, process.env.DB_FILENAME ?? 'fips.sqlite'),
   },
-}))
+})
 
-await PluginStore.init()
-await PluginStore.add('./plugins/readability.js')
-
-const scraper = new Scraper(conn, client)
-await scraper.scrape(
+const cli = new scraper.Scraper(conn, client)
+await cli.scrape(
   {
-    name: 'myScrapeProject',
+    name: 'Fips',
     pipeline: 'browser-static-content',
     pluginOpts: [
       {
@@ -51,19 +59,17 @@ await scraper.scrape(
       },
       {
         name: 'ExtractUrlsPlugin',
-        domRead: true,
         selectorPairs: [
           {
             urlSelector: 'div.col-md-9, .col-lg-auto a',
-            titleSelector: 'div.blocksgreed div.mintitle',
+            titleSelector: 'div.mintitle',
           },
           {
             urlSelector: '.mpk_section a',
-          },
-          {
-            urlSelector: '.mpk_section a',
+            titleSelector: 'div.mintitle',
           },
         ],
+        domRead: true,
       },
       {
         name: 'ExtractHtmlContentPlugin',
@@ -87,10 +93,13 @@ await scraper.scrape(
         maxResources: -1,
       },
       {
+        name: 'UpsertResourcePlugin',
+        keepHtmlData: true,
+      }, /* {
         name: 'ReadabilityPlugin',
         after: 'ExtractHtmlContentPlugin',
         domRead: true,
-      },
+      }, */
     ],
     resources: [
       {
@@ -98,18 +107,22 @@ await scraper.scrape(
       },
     ],
   },
-  {
+  /* {
     session: {
       maxRequests: 1,
-      delay: 500,
+      delay: 1000,
     },
-  },
+  }, */
 )
 
-scraper.on(ScrapeEvent.ProjectScraped, async (project) => {
-  const csvExporter = new CsvExporter({ filepath: 'books.csv' })
+cli.on(scraper.ScrapeEvent.ProjectScraped, async (project) => {
+  const csvExporter = new scraper.CsvExporter({
+    filepath: join(dataPath, 'fips.csv'),
+  })
   await csvExporter.export(project)
 
-  const zipExporter = new ZipExporter({ filepath: 'book-covers.zip' })
+  const zipExporter = new scraper.ZipExporter({
+    filepath: join(dataPath, 'data.zip'),
+  })
   await zipExporter.export(project)
 })
