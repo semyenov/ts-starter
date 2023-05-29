@@ -777,6 +777,62 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/bloom@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@redis/bloom@npm:1.2.0"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 8c214227287d6b278109098bca00afc601cf84f7da9c6c24f4fa7d3854b946170e5893aa86ed607ba017a4198231d570541c79931b98b6d50b262971022d1d6c
+  languageName: node
+  linkType: hard
+
+"@redis/client@npm:1.5.7":
+  version: 1.5.7
+  resolution: "@redis/client@npm:1.5.7"
+  dependencies:
+    cluster-key-slot: 1.1.2
+    generic-pool: 3.9.0
+    yallist: 4.0.0
+  checksum: 3ded14d947b1aba9121fb2608c99960d89716b1ef9baf48ef68384a30fc8e2fe2f1be7a959247d81e7ce15a38ea9e3fce512f3fdce5a400da88dc96496b09e89
+  languageName: node
+  linkType: hard
+
+"@redis/graph@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@redis/graph@npm:1.1.0"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: d3df807108a42929ed65269c691fe6ab7eda55de91318f02a22b2d637c1bfef8817fccd17025904f5a0be8cf1cea5941334ec9f10719336da5d8f1c54cd4997e
+  languageName: node
+  linkType: hard
+
+"@redis/json@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@redis/json@npm:1.0.4"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: de07f9c37abed603dec352593eb69fc8a94475e7f86b4f65b9805394492d448a1e4181db74269d80eb9dba6f3ae8a41804204821db36bb801cd7c1e30ac7ec80
+  languageName: node
+  linkType: hard
+
+"@redis/search@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@redis/search@npm:1.1.2"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: fc3c0bd62c150ea7f8b3f08b0e67893b4e8df71b4820d750de6ba00ccff3720fdc5d4f50618e385c9e183c784635185e2e98a3e6c3d20ac30f2c60996f38b992
+  languageName: node
+  linkType: hard
+
+"@redis/time-series@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@redis/time-series@npm:1.0.4"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: a5fca079deb04a2f204a7f9a375a6ff698a119d5dd53f7581fa8fd9e3bacacf1ecb0253b97fada484a012fea7a98014bc0f4f79707d4e92ff61c00318f2bfe04
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-alias@npm:^5.0.0":
   version: 5.0.0
   resolution: "@rollup/plugin-alias@npm:5.0.0"
@@ -2705,6 +2761,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cluster-key-slot@npm:1.1.2":
+  version: 1.1.2
+  resolution: "cluster-key-slot@npm:1.1.2"
+  checksum: be0ad2d262502adc998597e83f9ded1b80f827f0452127c5a37b22dfca36bab8edf393f7b25bb626006fb9fb2436106939ede6d2d6ecf4229b96a47f27edd681
+  languageName: node
+  linkType: hard
+
 "cmd-extension@npm:^1.0.2":
   version: 1.0.2
   resolution: "cmd-extension@npm:1.0.2"
@@ -4501,7 +4564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"generic-pool@npm:^3.9.0":
+"generic-pool@npm:3.9.0, generic-pool@npm:^3.9.0":
   version: 3.9.0
   resolution: "generic-pool@npm:3.9.0"
   checksum: 3d89e9b2018d2e3bbf44fec78c76b2b7d56d6a484237aa9daf6ff6eedb14b0899dadd703b5d810219baab2eb28e5128fb18b29e91e602deb2eccac14492d8ca8
@@ -7858,6 +7921,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redis@npm:^4.6.6":
+  version: 4.6.6
+  resolution: "redis@npm:4.6.6"
+  dependencies:
+    "@redis/bloom": 1.2.0
+    "@redis/client": 1.5.7
+    "@redis/graph": 1.1.0
+    "@redis/json": 1.0.4
+    "@redis/search": 1.1.2
+    "@redis/time-series": 1.0.4
+  checksum: fb2e667d91406105c229964ddaf120a8eaae02c1f583f384f68962e166542199300fd75af9572285af988870636b8e75b04562e6d9c250ab95e43c3d87a1cb72
+  languageName: node
+  linkType: hard
+
 "regexp-tree@npm:^0.1.24, regexp-tree@npm:~0.1.1":
   version: 0.1.27
   resolution: "regexp-tree@npm:0.1.27"
@@ -8346,6 +8423,7 @@ __metadata:
     nanoid: ^4.0.2
     postcss: ^8.4.23
     puppeteer: ^20.4.0
+    redis: ^4.6.6
     rollup: ^3.22.0
     rollup-plugin-dts: ^5.3.0
     rollup-plugin-esbuild: ^5.0.0
@@ -9699,7 +9777,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yallist@npm:^4.0.0":
+"yallist@npm:4.0.0, yallist@npm:^4.0.0":
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 343617202af32df2a15a3be36a5a8c0c8545208f3d3dfbc6bb7c3e3b7e8c6f8e7485432e4f3b88da3031a6e20afa7c711eded32ddfb122896ac5d914e75848d5

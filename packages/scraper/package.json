@@ -107,6 +107,7 @@
     "generic-pool": "^3.9.0",
     "lightning-pool": "^4.2.1",
     "nanoid": "^4.0.2",
-    "puppeteer": "^20.4.0"
+    "puppeteer": "^20.4.0",
+    "redis": "^4.6.6"
   }
 }

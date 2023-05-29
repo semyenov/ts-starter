@@ -26,7 +26,9 @@ const factory: PoolFactory<BrowserPage> = {
 }
 
 export const pool = new Pool(factory, {
-  maxQueue: 120,
+  maxQueue: 1000000,
+  acquireTimeoutMillis: -1,
+  idleTimeoutMillis: 10000,
   validation: true,
   max: 100, // maximum size of the pool
   min: 40, // minimum size of the pool

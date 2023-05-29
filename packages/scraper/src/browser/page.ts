@@ -1,11 +1,8 @@
-import { mkdir, writeFile } from 'node:fs/promises'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
-
-import { nanoid } from 'nanoid'
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 import { browser } from './browser'
-import { storage } from './storage'
+import { publisher } from './storage'
 
 import type { ConsoleMessage, HTTPRequest, HTTPResponse, Page, WaitForOptions } from 'puppeteer'
 
@@ -13,24 +10,23 @@ export interface PluginOptions extends Record<string, any> {
   selector: string
 }
 
-const pwd = dirname(fileURLToPath(import.meta.url))
-export const dataPath = join(pwd, `.data-${nanoid()}`)
-await mkdir(dataPath, { recursive: true })
+const dataPath = await mkdtemp('.scraper-')
 
-export interface PluginData extends Record<string, any> {
+export interface ResourceData {
+  ok: boolean
+  url: string
+  status: number
+  contentType: string | null
+  data: string
+}
+
+export interface PageData extends Record<string, any> {
   urls?: string[]
-  res?: {
-    ok: boolean
-    url: string
-    status: number
-    contentType: string | null
-    data: string
-  }
 }
 
 export interface EvaluateOptions {
   gotoOpts: WaitForOptions
-  pageFunction: (args: PluginOptions & PluginData) => PluginData
+  pageFunction: (params: PluginOptions) => PageData
   pageOpts: PluginOptions
 }
 
@@ -61,7 +57,7 @@ export class BrowserPage {
     this.ready = false
     // console.debug(url)
 
-    return new Promise<PluginData>((resolve, reject) => {
+    return new Promise<PageData | undefined>((resolve, reject) => {
       const page = this.page
 
       page.on('pageerror', reject)
@@ -72,15 +68,13 @@ export class BrowserPage {
 
       return page.goto(url, gotoOpts)
         .then(this.resToJSON)
-        .then((res) => {
-          const { pageFunction, pageOpts: args } = opts
+        .then((resource) => {
+          const { pageFunction, pageOpts } = opts
           return page.evaluate(
             pageFunction,
-            Object.assign({
-              res,
-              urls: [],
-            }, args))
-            .then(this.save)
+            pageOpts,
+          )
+            .then(data => this.publish(resource, data))
             .then(resolve)
             .catch(reject)
         })
@@ -107,19 +101,22 @@ export class BrowserPage {
     return this.page.close()
   }
 
-  save(data: PluginData) {
-    const url = new URL(data.res!.url.replace('https://ru.wikipedia.org/wiki', 'file://'))
-    storage.set(url.href, data)
+  async publish(resource?: ResourceData, data?: PageData) {
+    if (resource) {
+      await publisher.sAdd('queue', data?.urls || []).then(() => {
+        const url = new URL(resource.url)
+        const path = join(dataPath, decodeURI(url.pathname))
 
-    const path = join(dataPath, 'wiki', decodeURI(url.pathname))
-    console.log('New url -', path)
-
-    mkdir(path, { recursive: true }).then(
-      () => writeFile(join(path, 'index.html'),
-        data.res?.data || '',
-        { flag: 'w+' },
-      ),
-    )
+        console.log('New file -', path)
+        mkdir(path, { recursive: true })
+          .then(
+            () => writeFile(join(path, 'index.html'),
+              resource?.data || '',
+              { flag: 'w+' },
+            ),
+          )
+      })
+    }
 
     return data
   }
@@ -129,7 +126,8 @@ export class BrowserPage {
       return
 
     const headers = res.headers()
-    const matchArr = headers['content-type'].match(/^[^;]+/)
+    const matchArr = headers['content-type'] && headers['content-type'].match(/^[^;]+/)
+
     const buffer = await res.buffer()
 
     return {

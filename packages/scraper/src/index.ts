@@ -1,57 +1,45 @@
-import { pool, storage } from './browser'
-
-export async function scrape(url: string) {
-  // const ps = await browser.pages()
-
-  // console.log({ acquired: pool.acquired, available: pool.available, pending: pool.pending, ps, l: ps.length, ready: page.ready })
-
-  const page = await pool.acquire()
-  const data = await page.evaluate(
-    url,
-    {
-      gotoOpts: {
-        timeout: 5000,
-        waitUntil: 'domcontentloaded',
-      },
-      pageFunction(args) {
-        const urls: string[] = []
-        document.querySelectorAll<HTMLLinkElement>(args.selector).forEach(
-          (el, _key) => urls.push(el.href),
-        )
-
-        return {
-          ...args,
-          urls,
-        }
-      },
-      pageOpts: {
-        selector: 'a',
-      },
-    },
-  )
-    .catch(console.error)
-
-  pool.destroyAsync(page)
-
-  return data
-}
+import { pool, subscriber } from './browser'
 
 const visited: Set<string> = new Set()
 
-async function start() {
-  const urls = Array.from(storage.values())
-    .flatMap(item => item.urls || [])
-    .filter(url => url.startsWith('https://ru.wikipedia.org/wiki/'))
-    .filter(url => !visited.has(url))
+export function scrape(url: string) {
+  return pool.acquire().then((page) => {
+    return page.evaluate(
+      url,
+      {
+        gotoOpts: {
+          timeout: 50000,
+          waitUntil: 'domcontentloaded',
+        },
+        pageFunction(args) {
+          const urls: string[] = []
+          document.querySelectorAll<HTMLLinkElement>(args.selector).forEach(
+            (el, _key) => el.href.startsWith('https://ru.wikipedia.org') && urls.push(el.href),
+          )
 
-  for (const url of urls) {
-    visited.add(url)
-    await scrape(url)
-  }
-
-  await start()
+          return {
+            urls,
+          }
+        },
+        pageOpts: {
+          selector: 'a',
+        },
+      },
+    )
+      .catch(console.error)
+      .finally(() => pool.destroyAsync(page))
+  })
 }
 
-start()
+await scrape('https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0')
 
-process.on('SIGINT', () => JSON.stringify(storage))
+for await (const url of subscriber.sScanIterator('queue')) {
+  if (!visited.has(url)) {
+    visited.add(url)
+    scrape(url)
+  }
+}
+
+// function delay(ms: number) {
+//   return new Promise(resolve => setTimeout(resolve, ms))
+// }
