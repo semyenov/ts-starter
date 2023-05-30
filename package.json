@@ -100,6 +100,7 @@
     "@vscode/sqlite3": "5.1.4-vscode",
     "@yarnpkg/pnpify": "^4.0.0-rc.44",
     "cheerio": "^1.0.0-rc.12",
+    "consola": "^3.1.0",
     "esm": "^3.2.25",
     "esno": "^0.16.3",
     "knex": "^2.4.2",

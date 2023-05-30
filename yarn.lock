@@ -2897,6 +2897,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"consola@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "consola@npm:3.1.0"
+  checksum: b4b16b0ff6a0645fb1b820cf89dd56c8601b9ae0e2c472652bce2f5d99932ed5b38ef7ad2cfa77f4534cd6264d99cf5cf9c3c888e98cc25fbd3c87d31c824975
+  languageName: node
+  linkType: hard
+
 "console-control-strings@npm:^1.0.0, console-control-strings@npm:^1.1.0":
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
@@ -9211,6 +9218,7 @@ __metadata:
     "@yarnpkg/doctor": ^4.0.0-rc.44
     "@yarnpkg/pnpify": ^4.0.0-rc.44
     cheerio: ^1.0.0-rc.12
+    consola: ^3.1.0
     esbuild: ^0.17.19
     eslint: ^8.40.0
     eslint-import-resolver-node: ^0.3.7
