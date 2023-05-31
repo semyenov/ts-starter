@@ -221,6 +221,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@antfu/utils@npm:^0.7.3":
+  version: 0.7.3
+  resolution: "@antfu/utils@npm:0.7.3"
+  checksum: 7caadbf94d974310c45023c875ae472b04644bc7aba9096ebf804f7611d94f83d9ef72474931d58480d0728f474df84a6db61bd29dd345e63f5fe9e0c1e132e1
+  languageName: node
+  linkType: hard
+
 "@arcanis/slice-ansi@npm:^1.1.1":
   version: 1.1.1
   resolution: "@arcanis/slice-ansi@npm:1.1.1"
@@ -8392,7 +8399,7 @@ __metadata:
   dependencies:
     "@antfu/eslint-config": ^0.39.0
     "@antfu/eslint-config-ts": ^0.39.0
-    "@antfu/utils": ^0.7.2
+    "@antfu/utils": ^0.7.3
     "@mozilla/readability": ^0.4.4
     "@rollup/plugin-alias": ^5.0.0
     "@rollup/plugin-commonjs": ^25.0.0

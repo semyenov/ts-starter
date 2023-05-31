@@ -1,3 +1,3 @@
-# scrapper
+# Scraper
 
 [Author](https://github.com/semyenov)

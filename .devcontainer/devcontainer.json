@@ -14,12 +14,13 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "yy0931.vscode-sqlite3-editor",
-        "esbenp.prettier-vscode",
-        "arcanis.vscode-zipfs",
-        "dbaeumer.vscode-eslint",
-        "antfu.file-nesting"
-      ]
+		"yy0931.vscode-sqlite3-editor",
+		"esbenp.prettier-vscode",
+		"arcanis.vscode-zipfs",
+		"dbaeumer.vscode-eslint",
+		"antfu.file-nesting",
+		"yoavbls.pretty-ts-errors"
+	]
     }
   },
 

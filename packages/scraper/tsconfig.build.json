@@ -12,6 +12,7 @@
     "strict": true,
     "resolveJsonModule": true,
     "resolvePackageJsonExports": true,
+    "resolvePackageJsonImports": true,
     "allowSyntheticDefaultImports": true,
 
     "forceConsistentCasingInFileNames": true,
@@ -27,7 +28,7 @@
     "outDir": "./dist",
 
     "paths": {
-      "~": ["./src"]
+      "~/*": ["./src/*"]
     }
   },
   "include": ["./src/**/*"]

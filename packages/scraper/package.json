@@ -48,7 +48,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.0",
     "@antfu/eslint-config-ts": "^0.39.0",
-    "@antfu/utils": "^0.7.2",
+    "@antfu/utils": "^0.7.3",
     "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-json": "^6.0.0",
