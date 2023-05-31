@@ -22,7 +22,13 @@ const banner = `/**
 export default defineConfig([
   {
     input: inputFileName,
-    external: Object.keys(pkg.peerDependencies),
+    external: [
+      'puppeteer',
+      'redis',
+      'lightning-pool',
+      'consola',
+      'devalue',
+    ],
     output: [
       {
         file: pkg.main,
@@ -46,30 +52,14 @@ export default defineConfig([
       esbuild({
         tsconfig: './tsconfig.build.json',
         minify: true,
-        optimizeDeps: {
-          include: Object.keys(pkg.peerDependencies),
-          exclude: [
-            'jsdom',
-            'playwright-core',
-            'better-sqlite3',
-            'pg',
-            'mysql2',
-            'fsevents',
-            'mysql',
-            'pg-query-stream',
-            'tedious',
-            'oracledb',
-            'mock-aws-s3',
-            'aws-sdk',
-            'nock',
-            'uuid',
-          ],
-          esbuildOptions: {
-            platform: 'node',
-            mainFields: ['module', 'main'],
-            tsconfig: './tsconfig.build.json',
-          },
-        },
+        // optimizeDeps: {
+        //   include: Object.keys(pkg.peerDependencies),
+        //   esbuildOptions: {
+        //     platform: 'node',
+        //     mainFields: ['module', 'main'],
+        //     tsconfig: './tsconfig.build.json',
+        //   },
+        // },
       }),
       // typescript({
       //   tsconfig: './tsconfig.build.json',
@@ -86,6 +76,9 @@ export default defineConfig([
         format: 'esm',
       },
     ],
-    plugins: [dts()],
+    plugins: [dts({
+      tsconfig: './tsconfig.build.json',
+      respectExternal: true,
+    })],
   },
 ])

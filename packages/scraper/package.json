@@ -40,7 +40,7 @@
     "dev": "esno src/index.ts",
     "build": "rollup --configPlugin typescript --config rollup.config.ts",
     "typecheck": "tsc --noEmit",
-    "start": "node --experimental-modules --experimental-import-meta-resolve dist/index.js",
+    "start": "node --experimental-modules --experimental-import-meta-resolve dist/esm/index.mjs",
     "release": "yarn publish",
     "lint": "eslint --ext=ts,js,vue .",
     "clean": "yarn exec rm -rf dist"

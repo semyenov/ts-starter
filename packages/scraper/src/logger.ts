@@ -5,4 +5,4 @@ export const logger = createConsola({
   defaults: { tag: 'Scraper' },
 })
 
-logger.wrapAll()
+// logger.wrapAll()

@@ -1,9 +1,8 @@
-import { btoa } from 'node:buffer'
-
-import { stringify } from 'devalue'
 import { createClient } from 'redis'
 
-import type { Resource, ResourceLink } from 'src/types'
+import * as utils from './utils'
+
+import type { Resource } from './types'
 
 export const sQueue = 'queue' as const
 export const hResource = 'resource' as const
@@ -33,18 +32,18 @@ export function queueExists() {
     })
 }
 
-export function setQueue(links: ResourceLink[]) {
+export function setQueue(links: string[]) {
   if (!links.length)
     return Promise.resolve(0)
 
-  return publisher.sAdd(sQueue, links.map(encodeLink))
+  return publisher.sAdd(sQueue, links)
 }
 
-export function remQueue(links: ResourceLink[]) {
+export function remQueue(links: string[]) {
   if (!links.length)
     return Promise.resolve(0)
 
-  return publisher.sRem(sQueue, links.map(encodeLink))
+  return publisher.sRem(sQueue, links)
 }
 
 let queueCursor = 0
@@ -58,9 +57,10 @@ export function fetchQueue(n: number) {
 }
 
 export function addResource(resource: Resource) {
-  return remQueue([resource.url])
-    .then(() => setQueue(resource.links))
+  return remQueue([utils.encodeLink([resource.url, resource.parent])])
+    .then(() => setQueue(resource.links.map(utils.encodeLink)))
     .then(() => setResource(resource))
+    .then(() => resource)
 }
 
 function setResource(resource: Resource, fields?: string[]) {
@@ -73,7 +73,7 @@ function setResource(resource: Resource, fields?: string[]) {
 
       switch (typeof val) {
         case 'object':
-          return [key, stringify(val)]
+          return [key, JSON.stringify(val)]
         case 'boolean':
           return [key, +val]
       }
@@ -81,17 +81,5 @@ function setResource(resource: Resource, fields?: string[]) {
       return [key, val]
     })
 
-  return publisher.hSet(encodeKey(resource.url), tuples)
-}
-
-function encodeLink(link: ResourceLink): string {
-  return link.map(btoa).join(':')
-}
-
-function decodeLink(link: string) {
-  return link.split(':').map(atob)
-}
-
-function encodeKey(url: string, ...fields: string[]) {
-  return [hResource, btoa(url), ...fields].join(':')
+  return publisher.hSet(utils.encodeKey(hResource, resource.url), tuples)
 }

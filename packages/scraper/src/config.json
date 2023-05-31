@@ -5,14 +5,14 @@
   ],
   "selectors": [
     {
-      "id": "001 link",
+      "id": "-link",
       "parentSelectors": ["_root"],
       "type": "SelectorLink",
       "selector": ".col-lg-auto a",
       "multiple": true
     },
     {
-      "id": "001 title",
+      "id": "-title",
       "parentSelectors": ["_root"],
       "type": "SelectorText",
       "selector": "div.mintitle",
@@ -20,38 +20,38 @@
       "regex": ""
     },
     {
-      "id": "002 code",
-      "parentSelectors": ["001 link"],
+      "id": "--code",
+      "parentSelectors": ["-link"],
       "type": "SelectorLink",
       "selector": ".mpk_section a",
       "multiple": true
     },
     {
-      "id": "002 note",
-      "parentSelectors": ["001 link"],
+      "id": "--note",
+      "parentSelectors": ["-link"],
       "type": "SelectorText",
       "selector": "div:nth-of-type(n+12) div.mpk_section_note",
       "multiple": true,
       "regex": ""
     },
     {
-      "id": "003 code",
-      "parentSelectors": ["002 code"],
+      "id": "---code",
+      "parentSelectors": ["--code"],
       "type": "SelectorLink",
       "selector": ".mpk_section a",
       "multiple": true
     },
     {
-      "id": "003 note",
-      "parentSelectors": ["002 code"],
+      "id": "---note",
+      "parentSelectors": ["--code"],
       "type": "SelectorText",
       "selector": "div.mpk_section_note",
       "multiple": true,
       "regex": ""
     },
     {
-      "id": "003 title",
-      "parentSelectors": ["002 code"],
+      "id": "---title",
+      "parentSelectors": ["--code"],
       "type": "SelectorText",
       "selector": "div.mintitle",
       "multiple": false,
@@ -59,7 +59,7 @@
     },
     {
       "id": "004 code",
-      "parentSelectors": ["003 code"],
+      "parentSelectors": ["---code"],
       "type": "SelectorText",
       "selector": "div.mpk_section",
       "multiple": true,
@@ -67,7 +67,7 @@
     },
     {
       "id": "004 note",
-      "parentSelectors": ["003 code"],
+      "parentSelectors": ["---code"],
       "type": "SelectorText",
       "selector": "div.mpk_section_note",
       "multiple": true,
@@ -75,15 +75,15 @@
     },
     {
       "id": "004 title",
-      "parentSelectors": ["003 code"],
+      "parentSelectors": ["---code"],
       "type": "SelectorText",
       "selector": "div.boldtext",
       "multiple": false,
       "regex": ""
     },
     {
-      "id": "002 title",
-      "parentSelectors": ["001 link"],
+      "id": "--title",
+      "parentSelectors": ["-link"],
       "type": "SelectorText",
       "selector": "div.mintitle",
       "multiple": false,

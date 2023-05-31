@@ -27,8 +27,9 @@ export interface Resource {
   url: string
   status: number
   contentType: string | null
-  buffer: Buffer
+  buffer?: Buffer
 
-  links: string[]
+  parent: string
+  links: ResourceLink[]
   data: Record<string, any>[]
 }

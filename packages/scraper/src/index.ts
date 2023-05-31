@@ -1,17 +1,20 @@
-import { disconnect } from 'node:process'
-
 import { Pool } from 'lightning-pool'
 
-import * as store from '~/store'
-import type { Config, Resource, Selector } from '~/types'
-import config from '~/config.json' assert {type: 'json'}
-
+import * as store from './store'
+import * as utils from './utils'
 import { logger } from './logger'
-import { browser } from './browser'
+import { createBrowser } from './browser'
+import config from './config.json' assert {type: 'json'}
 
+import type { Config, Resource, Selector } from './types'
 import type { ConsoleMessage, HTTPResponse, Page } from 'puppeteer'
 
 function wrapPage(page: Page) {
+  const consoleHandler = (msg: ConsoleMessage) => {
+    for (const msgArg of msg.args())
+      logger.debug('DOM console', msgArg.toString())
+  }
+
   page.on('pageerror', logger.error)
   page.on('error', logger.error)
   page.on('console', consoleHandler)
@@ -25,27 +28,19 @@ function wrapPage(page: Page) {
       return page.close()
     },
 
-    // reload() {
-    //   return this.close()
-    //     .then(browser.newPage)
-    //     .then((page) => {
-    //       page.on('pageerror', logger.error)
-    //       page.on('error', logger.error)
-    //       page.on('console', consoleHandler)
-    //     })
-    // },
-
     evaluate(
-      url: string,
+      uri: string,
+      parent: string,
       selectors: Selector[],
       pageFunction: (selectors: Selector[], resource: Resource) => Resource,
     ) {
-      return page.goto(url, {
-        timeout: 0,
+      return page.goto(uri, {
         waitUntil: 'domcontentloaded',
+        timeout: 0,
       })
         .then(responseToResource)
         .then((resource) => {
+          resource.parent = parent
           return page.evaluate(
             pageFunction,
             selectors,
@@ -53,7 +48,11 @@ function wrapPage(page: Page) {
           )
         })
         .then((resource) => {
-          logger.debug('resource', resource)
+          logger.trace('resource.status', resource.status)
+          logger.trace('resource.url', resource.url)
+          logger.trace('resource.links', resource.links)
+          logger.trace('resource.data', resource.data)
+
           return resource
         })
         .then(store.addResource)
@@ -70,124 +69,110 @@ function responseToResource(response: HTTPResponse | null): Promise<Resource> {
     && headers['content-type'].match(/^[^;]+/)
 
   return response.buffer()
-    .then(buffer => ({
-      ok: response.ok(),
-      url: response.url(),
-      status: response.status(),
-      contentType: matchArr ? matchArr[0] : null,
-      buffer,
+    .then((buffer) => {
+      return {
+        ok: response.ok(),
+        url: response.url(),
+        status: response.status(),
+        contentType: matchArr ? matchArr[0] : null,
+        // buffer,
 
-      links: [],
-      data: [],
-    }))
-}
-
-// function getRedirectResponse(req: HTTPRequest) {
-//   const redirectChain = req.redirectChain()
-//   if (redirectChain.length > 0) {
-//     const next = redirectChain[0].response()
-//     if (next)
-//       return next
-//   }
-
-//   return null
-// }
-
-function consoleHandler(msg: ConsoleMessage) {
-  for (const msgArg of msg.args())
-    logger.debug('DOM console', msgArg.toString())
-}
-
-export const resourcePool = new Pool({
-  async create(_opts) {
-    logger.debug('pool:create')
-    const page = await browser.newPage()
-    return wrapPage(page)
-  },
-  async destroy(resource) {
-    logger.debug('pool:destroy')
-    await resource.close()
-  },
-},
-{
-  max: 120, // maximum size of the pool
-  min: 10, // minimum size of the pool
-  minIdle: 2, // minimum idle resources
-  maxQueue: 1000000,
-})
-
-export function scrape(link: string) {
-  return resourcePool.acquire()
-    .then((page) => {
-      logger.debug('Evaluate', link)
-      return page.evaluate(
-        link,
-        config.selectors as Selector[],
-        (selectors, resource) => {
-          const encodeLink = (parent: string, uri: string) => [parent, uri].join(' ')
-          const decodeLink = (link: string) => link.includes(' ') ? link.split(' ', 2) : ['', link]
-
-          const fetchData = (
-            el: HTMLElement,
-            p: string,
-            d: typeof resource['data'],
-          ) => {
-            selectors
-              .filter(s => s.parentSelectors.includes(p))
-              .forEach((s) => {
-                el
-                  .querySelectorAll<HTMLLinkElement>(s.selector)
-                  .forEach((e, i) => {
-                    switch (s.type) {
-                      case 'SelectorLink':
-                        resource.links.push(encodeLink(p, e.href))
-                        d[i][s.id] = {
-                          text: el.innerText,
-                          href: e.href,
-                        }
-                        break
-                      case 'SelectorText':
-                        d[i][s.id] = {
-                          text: el.innerText,
-                        }
-                        break
-
-                      case 'SelectorElement':
-                        d[i][s.id] = []
-                        fetchData(el, s.id, d[i][s.id])
-                        break
-                    }
-                  })
-              })
-          }
-
-          const [parent] = decodeLink(link)
-          fetchData(document.body, parent, resource.data)
-
-          return resource
-        },
-      )
-        .then(() => {
-          resourcePool.release(page)
-          logger.success(decodeURIComponent(link))
-        })
+        parent: '',
+        links: [],
+        data: [],
+      }
     })
 }
 
 async function start(config: Config) {
   await store.connect()
+  const browser = await createBrowser()
+
+  const resourcePool = new Pool({
+    async create(_opts) {
+      logger.debug('pool:create')
+      const page = await browser.newPage()
+      return wrapPage(page)
+    },
+    async destroy(resource) {
+      logger.debug('pool:destroy')
+      await resource.close()
+    },
+  },
+  {
+    max: 120, // maximum size of the pool
+    min: 10, // minimum size of the pool
+    minIdle: 2, // minimum idle resources
+    maxQueue: 1000000,
+  })
+
+  function scrape(uri: string, parent: string) {
+    return resourcePool.acquire()
+      .then((page) => {
+        return page.evaluate(
+          uri,
+          parent,
+          config.selectors as Selector[],
+          (selectors, resource) => {
+            const run = (
+              el: HTMLElement,
+              p: string,
+              d: Array<Record<string, any>>,
+            ) => {
+              selectors
+                .filter(s => s.parentSelectors.includes(p))
+                .forEach((s) => {
+                  el
+                    .querySelectorAll<HTMLLinkElement>(s.selector)
+                    .forEach((e, i) => {
+                      if (typeof d[i] === 'undefined')
+                        d[i] = Object.create(null)
+
+                      switch (s.type) {
+                        case 'SelectorLink':
+                          resource.links.push([e.href, s.id])
+
+                          d[i][s.id] = e.innerText
+                          break
+                        case 'SelectorText':
+                          d[i][s.id] = e.innerText
+                          break
+                        case 'SelectorElement':
+                          d[i][s.id] = []
+                          // run(e, s.id, d[i][s.id])
+                          break
+                      }
+                    })
+                })
+            }
+
+            run(document.body, resource.parent, resource.data)
+            return resource
+          },
+        )
+          .catch(logger.error)
+          .then(() => {
+            resourcePool.release(page)
+            logger.success('Evaluate', [uri, parent].join('@'))
+          })
+      })
+  }
 
   const { startUrl } = config
-  await store.setQueue(startUrl.map(url => ` ${url}`))
+  await store.setQueue(startUrl.map(url => utils.encodeLink([url, '_root'])))
 
   do {
-    const urls = await store.fetchQueue(10)
-    await Promise.all(urls.map(scrape))
+    const links = await store.fetchQueue(10)
+    await Promise.all(links.map((link) => {
+      const [uri, parent] = utils.decodeLink(link)
+      return scrape(uri, parent)
+    }))
   } while (await store.queueExists())
 
   await browser.close()
+  await store.disconnect()
 
-  await disconnect()
+  process.exit(0)
 }
 
-await start(config as Config)
+start(config as Config)
