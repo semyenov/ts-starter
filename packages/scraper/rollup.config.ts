@@ -3,14 +3,14 @@ import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs'
 import esbuild from 'rollup-plugin-esbuild'
 import resolve from '@rollup/plugin-node-resolve'
-import postcss from 'rollup-plugin-postcss'
 import dts from 'rollup-plugin-dts'
 import { defineConfig } from 'rollup'
 
 import pkg from './package.json' assert { type: 'json' }
 
-const inputFileName = 'src/index.ts'
+const input = 'src/index.ts'
 const moduleName = pkg.name.replace(/^@.*\//, '')
+const external = Object.keys(pkg.dependencies)
 const author = pkg.author
 const banner = `/**
   * @license
@@ -21,14 +21,8 @@ const banner = `/**
 
 export default defineConfig([
   {
-    input: inputFileName,
-    external: [
-      'puppeteer',
-      'redis',
-      'lightning-pool',
-      'consola',
-      'devalue',
-    ],
+    input,
+    external,
     output: [
       {
         file: pkg.main,
@@ -52,33 +46,24 @@ export default defineConfig([
       esbuild({
         tsconfig: './tsconfig.build.json',
         minify: true,
-        // optimizeDeps: {
-        //   include: Object.keys(pkg.peerDependencies),
-        //   esbuildOptions: {
-        //     platform: 'node',
-        //     mainFields: ['module', 'main'],
-        //     tsconfig: './tsconfig.build.json',
-        //   },
-        // },
       }),
-      // typescript({
-      //   tsconfig: './tsconfig.build.json',
-      // }),
-      postcss(),
     ],
   },
   {
-    input: inputFileName,
-    external: [/\.css$/],
-    output: [
-      {
-        file: pkg.types,
-        format: 'esm',
-      },
+    input,
+    external,
+    output: [{
+      file: pkg.types,
+      format: 'esm',
+    }],
+    plugins: [
+      resolve({
+        preferBuiltins: true,
+      }),
+      dts({
+        tsconfig: './tsconfig.build.json',
+        respectExternal: true,
+      }),
     ],
-    plugins: [dts({
-      tsconfig: './tsconfig.build.json',
-      respectExternal: true,
-    })],
   },
 ])

@@ -34,13 +34,18 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ],
+  "bin": {
+    "scraper-cli": "bin/scraper-cli.mjs"
+  },
   "scripts": {
     "dev": "esno src/index.ts",
     "build": "rollup --configPlugin typescript --config rollup.config.ts",
     "typecheck": "tsc --noEmit",
     "start": "node --experimental-modules --experimental-import-meta-resolve dist/esm/index.mjs",
+    "schema": "typescript-json-schema --out schema.json --skipLibCheck src/types/index.ts Config",
     "release": "yarn publish",
     "lint": "eslint --ext=ts,js,vue .",
     "clean": "yarn exec rm -rf dist"
@@ -88,6 +93,7 @@
     "simple-git-hooks": "^2.8.1",
     "tslib": "^2.5.2",
     "typescript": "^5.0.4",
+    "typescript-json-schema": "^0.56.0",
     "vue-eslint-parser": "^9.3.0",
     "yaml-eslint-parser": "^1.2.2"
   },
@@ -102,6 +108,8 @@
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",
+    "consola": "^3.1.0",
+    "defu": "^6.1.2",
     "devalue": "^4.3.2",
     "esno": "^0.16.3",
     "generic-pool": "^3.9.0",

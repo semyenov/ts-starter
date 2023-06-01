@@ -1,4 +1,6 @@
-import type { ResourceLink } from './types'
+import { atob, btoa } from 'node:buffer'
+
+import type { ResourceLink } from '../types'
 
 export function encodeLink(link: ResourceLink): string {
   return link.map(btoa).join(':')
