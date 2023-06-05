@@ -8555,8 +8555,8 @@ __metadata:
     typescript-json-schema: ^0.56.0
     vue-eslint-parser: ^9.3.0
     yaml-eslint-parser: ^1.2.2
-  peerDependencies:
-    "@get-set-fetch/scraper": ^0.11.0
+  bin:
+    scraper-cli: bin/scraper-cli.mjs
   languageName: unknown
   linkType: soft
 

@@ -15,7 +15,6 @@ async function run() {
   if (!configPath) {
     configPath = await logger.prompt('Config path', {
       type: 'text',
-      initial: './config.json',
       default: './config.json',
     })
   }

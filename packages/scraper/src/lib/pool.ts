@@ -15,9 +15,9 @@ export function createPool(config: PoolConfiguration, browser: Browser) {
       const page = await browser.newPage()
       return wrapPage(page)
     },
-    async destroy(resource) {
+    destroy(resource) {
       logger.debug('pool:destroy')
-      await resource.close()
+      return resource.close()
     },
   }, config)
 }
@@ -41,38 +41,28 @@ function wrapPage(page: Page) {
       return page.close()
     },
 
-    evaluate(
+    async evaluate(
       uri: string,
       parent: string,
       selectors: ConfigSelector[],
       pageFunction: PipelineFunc,
     ) {
-      return page.goto(uri, {
+      const response = await page.goto(uri, {
         waitUntil: 'domcontentloaded',
         timeout: 0,
       })
-        .then(createResource)
-        .then((resource) => {
-          resource.parent = parent
-          return page.evaluate(
-            pageFunction,
-            selectors,
-            resource,
-          )
-        })
-        .then((resource) => {
-          logger.trace('resource.url', resource.url)
-          logger.trace('resource.status', resource.status)
-          logger.trace('resource.links', resource.links)
-          logger.trace('resource.data', resource.data)
+      const resource = await createResource(response)
+      resource.parent = parent
 
-          return resource
-        })
+      return page.evaluate(
+        pageFunction,
+        selectors,
+        resource)
     },
   }
 }
 
-function createResource(response: HTTPResponse | null): Promise<Resource> {
+async function createResource(response: HTTPResponse | null): Promise<Resource> {
   if (response === null)
     throw new Error('Response is null')
 
@@ -80,18 +70,15 @@ function createResource(response: HTTPResponse | null): Promise<Resource> {
   const matchArr = headers['content-type']
     && headers['content-type'].match(/^[^;]+/)
 
-  return response.buffer()
-    .then((buffer) => {
-      return {
-        ok: response.ok(),
-        url: response.url(),
-        status: response.status(),
-        contentType: matchArr ? matchArr[0] : null,
-        buffer,
+  return {
+    ok: response.ok(),
+    url: response.url(),
+    status: response.status(),
+    contentType: matchArr ? matchArr[0] : null,
+    buffer: await response.buffer(),
 
-        parent: '',
-        links: [],
-        data: [],
-      }
-    })
+    parent: '',
+    links: [],
+    data: [],
+  }
 }

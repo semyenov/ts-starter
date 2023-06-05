@@ -13,6 +13,7 @@ export type Pipelines = Record<PipelineType, PipelineFunc>
 export type ConfigSelectorType =
   'SelectorLink' |
   'SelectorText' |
+  'SelectorHTML' |
   'SelectorElement'
 export interface ConfigSelector {
   id: string

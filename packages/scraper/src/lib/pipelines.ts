@@ -26,6 +26,9 @@ export const pipelines: Pipelines = {
                 case 'SelectorText':
                   d[i][p] = e.innerText
                   break
+                case 'SelectorHTML':
+                  d[i][p] = e.innerHTML
+                  break
                 case 'SelectorElement':
                   d[i][p] = []
                   parse(e, s.id, d[i][s.id])

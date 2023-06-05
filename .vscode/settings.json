@@ -67,5 +67,8 @@
       }
     ],
     "scanLimit": 200
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   }
 }

@@ -63,22 +63,22 @@ export function createScraper(config: Config) {
         ),
       )
 
-      function evaluate(uri: string, parent: string) {
-        return pool.acquire()
-          .then((page) => {
-            return page.evaluate(
-              uri,
-              parent,
-              config.selectors as ConfigSelector[],
-              pipelines[config.pipeline],
-            )
-              .then(store.addResource)
-              .catch(logger.error)
-              .then(() => {
-                pool.release(page)
-                logger.info('Evaluate', [uri, parent].join('@'))
-              })
-          })
+      async function evaluate(uri: string, parent: string) {
+        logger.info('Evaluate', [uri, parent].join('@'))
+        const page = await pool.acquire()
+        const resourse = await page.evaluate(
+          uri,
+          parent,
+          config.selectors as ConfigSelector[],
+          pipelines[config.pipeline],
+        ).catch(logger.error)
+
+        if (resourse)
+          await store.addResource(resourse)
+
+        await pool.releaseAsync(page)
+
+        return resourse
       }
 
       while (await store.queueExists()) {

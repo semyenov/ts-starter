@@ -50,43 +50,39 @@ export function createStore(config: RedisClientOptions) {
   }
 
   return {
-    connect() {
-      return Promise.all([
-        publisher.connect(),
-        subscriber.connect(),
-      ])
+    async connect() {
+      await publisher.connect()
+      await subscriber.connect()
     },
 
-    disconnect() {
-      return Promise.all([
-        publisher.disconnect(),
-        subscriber.disconnect(),
-      ])
+    async disconnect() {
+      await publisher.disconnect()
+      await subscriber.disconnect()
     },
 
     setQueue,
     remQueue,
     setResource,
 
-    queueExists() {
-      return publisher.exists(sQueue)
-        .then(res => res !== 0)
+    async queueExists() {
+      const res = await publisher.exists(sQueue)
+      return res !== 0
     },
 
-    fetchQueue(n: number) {
-      return subscriber
+    async fetchQueue(n: number) {
+      const data = await subscriber
         .sScan(sQueue, queueCursor, { COUNT: n })
-        .then((data) => {
-          queueCursor = data.cursor
-          return data.members
-        })
+      queueCursor = data.cursor
+
+      return data.members
     },
 
-    addResource(resource: Resource) {
-      return remQueue([utils.encodeLink([resource.url, resource.parent])])
-        .then(() => setQueue(resource.links.map(utils.encodeLink)))
-        .then(() => setResource(resource))
-        .then(() => resource)
+    async addResource(resource: Resource) {
+      await remQueue([utils.encodeLink([resource.url, resource.parent])])
+      await setQueue(resource.links.map(utils.encodeLink))
+      await setResource(resource)
+
+      return resource
     },
   }
 }

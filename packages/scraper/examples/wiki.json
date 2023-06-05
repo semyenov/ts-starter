@@ -1,0 +1,36 @@
+{
+  "$schema": "../schema.json",
+
+  "_id": "wiki",
+  "pipeline": "web-scraper",
+  "parallel": 50,
+
+  "startUrl": [
+    "https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
+  ],
+  "selectors": [
+    {
+      "id": "001:link",
+      "multiple": true,
+      "parentSelectors": ["_root"],
+      "selector": "#content a",
+      "type": "SelectorLink"
+    },
+    {
+      "id": "002:title",
+      "multiple": false,
+      "parentSelectors": ["001:link"],
+      "regex": "",
+      "selector": "h1",
+      "type": "SelectorText"
+    },
+    {
+      "id": "002:text",
+      "multiple": false,
+      "parentSelectors": ["001:link"],
+      "regex": "",
+      "selector": "#mw-content-text",
+      "type": "SelectorText"
+    }
+  ]
+}
