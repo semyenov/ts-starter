@@ -4,6 +4,7 @@
   "_id": "fips",
   "pipeline": "web-scraper",
   "parallel": 20,
+  "timeout": 100,
 
   "startUrl": [
     "https://www1.fips.ru/publication-web/classification/mpk?view=list&edition=2023"

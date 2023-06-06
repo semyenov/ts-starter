@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "scraper",
+  "name": "scraper-cli",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "yarn@3.5.1",
@@ -37,9 +37,7 @@
     "dist",
     "bin"
   ],
-  "bin": {
-    "scraper-cli": "bin/scraper-cli.mjs"
-  },
+  "bin": "bin/scraper-cli.mjs",
   "scripts": {
     "dev": "esno src/index.ts",
     "build": "rollup --configPlugin typescript --config rollup.config.ts",

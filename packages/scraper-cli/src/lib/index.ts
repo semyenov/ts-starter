@@ -20,6 +20,7 @@ export function createScraper(config: Config) {
     [{
       _id: string
       parallel: number
+      timeout: number
       pipeline: PipelineType
 
       startUrl: string[]
@@ -34,6 +35,7 @@ export function createScraper(config: Config) {
     {
       _id: 'default',
       parallel: 10,
+      timeout: 500,
       pipeline: 'web-scraper',
 
       startUrl: [],
@@ -87,6 +89,7 @@ export function createScraper(config: Config) {
           const [uri, parent] = utils.decodeLink(link)
           return evaluate(uri, parent)
         }))
+        await utils.sleep(config.timeout)
       }
 
       await pool.closeAsync()

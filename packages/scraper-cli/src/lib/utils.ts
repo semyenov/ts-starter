@@ -13,3 +13,7 @@ export function decodeLink(link: string) {
 export function encodeKey(prefix: string, url: string, ...fields: string[]) {
   return [prefix, btoa(url), ...fields].join(':')
 }
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}

@@ -26,6 +26,7 @@ export interface ConfigSelector {
 export interface Config {
   _id: string
   parallel: number
+  timeout: number
   pipeline: PipelineType
 
   startUrl: string[]

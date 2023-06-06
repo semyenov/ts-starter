@@ -31,7 +31,7 @@ export const pipelines: Pipelines = {
                   break
                 case 'SelectorElement':
                   d[i][p] = []
-                  parse(e, s.id, d[i][s.id])
+                  parse(e, s.id, d[i][p])
                   break
               }
             })

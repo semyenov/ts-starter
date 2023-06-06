@@ -10,7 +10,7 @@ import { createScraper } from '../dist/esm/index.mjs'
 const logger = consola.create({ defaults: { tag: 'scraper-cli' } })
 
 async function run() {
-  let configPath = argv[3]
+  let configPath = argv[2]
 
   if (!configPath) {
     configPath = await logger.prompt('Config path', {
@@ -22,7 +22,7 @@ async function run() {
   const scraper = createScraper(config)
   logger.start(`Scraping ${config._id} project`)
   await scraper.run()
-  logger.success('done')
+  logger.success(`Project ${config._id} done`)
 }
 
 run()
