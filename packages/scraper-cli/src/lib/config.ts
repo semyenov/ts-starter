@@ -1,8 +1,12 @@
 import defu from 'defu'
 
-import type { Config } from '~/types'
+import type {
+  Config,
+} from '~/types'
 
-import { pipelines } from './pipelines'
+import {
+  pipelines,
+} from './pipelines'
 
 export const defaultConfig = {
   _id: 'default',
@@ -22,7 +26,9 @@ export const defaultConfig = {
   },
 } as const
 
-export function createConfig(config: Config) {
+export function createConfig(
+  config: Config,
+) {
   if (!config.startUrl.length)
     throw new Error('No start URLs provided')
 

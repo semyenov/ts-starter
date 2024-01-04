@@ -1,4 +1,8 @@
-import type { Pipelines, ResourceData, ResourceLink } from '~/types'
+import type {
+  Pipelines,
+  ResourceData,
+  ResourceLink,
+} from '~/types'
 
 export const pipelines: Pipelines = {
   'web-scraper': (
@@ -12,9 +16,7 @@ export const pipelines: Pipelines = {
       links: ResourceLink[],
     ) => {
       selectors
-        .filter(s =>
-          s.parentSelectors.includes(parent),
-        )
+        .filter(s => s.parentSelectors.includes(parent))
         .forEach((s) => {
           rootEl
             .querySelectorAll(s.selector)

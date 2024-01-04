@@ -13,7 +13,7 @@
     "noResolve": false,
 
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
     },
     "resolveJsonModule": true,
     "resolvePackageJsonExports": true,
@@ -28,7 +28,7 @@
 
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
 }

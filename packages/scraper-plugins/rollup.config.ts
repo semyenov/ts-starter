@@ -5,7 +5,9 @@ import esbuild from 'rollup-plugin-esbuild'
 import resolve from '@rollup/plugin-node-resolve'
 import postcss from 'rollup-plugin-postcss'
 import dts from 'rollup-plugin-dts'
-import { defineConfig } from 'rollup'
+import {
+  defineConfig,
+} from 'rollup'
 
 import pkg from './package.json' assert { type: 'json' }
 

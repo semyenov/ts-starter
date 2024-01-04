@@ -1,11 +1,27 @@
-import { Pool } from 'lightning-pool'
+import {
+  Pool,
+} from 'lightning-pool'
 
-import type { ConfigSelector, PipelineFunc, Resource, ResourceLink } from '~/types'
+import type {
+  ConfigSelector,
+  PipelineFunc,
+  Resource,
+  ResourceLink,
+} from '~/types'
 
-import { logger } from './logger'
+import {
+  logger,
+} from './logger'
 
-import type { PoolConfiguration } from 'lightning-pool'
-import type { Browser, ConsoleMessage, HTTPResponse, Page } from 'puppeteer'
+import type {
+  PoolConfiguration,
+} from 'lightning-pool'
+import type {
+  Browser,
+  ConsoleMessage,
+  HTTPResponse,
+  Page,
+} from 'puppeteer'
 
 export function createPool(
   browser: Browser,
@@ -67,7 +83,10 @@ function wrapPage(page: Page) {
   }
 }
 
-async function responseToResource(response: HTTPResponse, parent: string): Promise<Resource> {
+async function responseToResource(
+  response: HTTPResponse,
+  parent: string,
+): Promise<Resource> {
   const headers = response.headers()
   const matchArr = headers['content-type']
     && headers['content-type'].match(/^[^;]+/)
@@ -77,7 +96,9 @@ async function responseToResource(response: HTTPResponse, parent: string): Promi
     url: response.url(),
     status: response.status(),
 
-    contentType: matchArr ? matchArr[0] : null,
+    contentType: matchArr
+      ? matchArr[0]
+      : null,
     buffer: await response.buffer(),
 
     parent,
@@ -86,7 +107,9 @@ async function responseToResource(response: HTTPResponse, parent: string): Promi
   }
 }
 
-function consoleHandler(msg: ConsoleMessage) {
+function consoleHandler(
+  msg: ConsoleMessage,
+) {
   for (const arg of msg.args())
     logger.debug('DOM console', arg.toString())
 }

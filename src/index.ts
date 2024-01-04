@@ -1,22 +1,39 @@
-import { mkdtemp } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import {
+  mkdtemp,
+} from 'node:fs/promises'
+import {
+  dirname,
+  join,
+} from 'node:path'
+import process from 'node:process'
+import {
+  fileURLToPath,
+} from 'node:url'
 
 import scraper from '@get-set-fetch/scraper'
-import { destination, pino } from 'pino'
+import {
+  destination,
+  pino,
+} from 'pino'
 import pretty from 'pino-pretty'
 
-const pwd = dirname(fileURLToPath(import.meta.url))
+const pwd = dirname(
+  fileURLToPath(import.meta.url),
+)
 
 const pluginsPath = join(pwd, 'plugins')
-const dataPath = await mkdtemp(join(pwd, '.scraper-'))
+const dataPath = await mkdtemp(
+  join(pwd, '.scraper-'),
+)
 
 const logDestination = destination({
   dest: join(dataPath, process.env.LOG_FILENAME ?? 'test.debug.log'),
 })
 
 await scraper.PluginStore.init()
-await scraper.PluginStore.addEntries(pluginsPath)
+await scraper.PluginStore.addEntries(
+  pluginsPath,
+)
 
 scraper.setLogger(
   { base: { dataPath }, level: 'trace' },
@@ -115,14 +132,17 @@ await cli.scrape(
   }, */
 )
 
-cli.on(scraper.ScrapeEvent.ProjectScraped, async (project) => {
-  const csvExporter = new scraper.CsvExporter({
-    filepath: join(dataPath, 'fips.csv'),
-  })
-  await csvExporter.export(project)
+cli.on(
+  scraper.ScrapeEvent.ProjectScraped,
+  async (project) => {
+    const csvExporter = new scraper.CsvExporter({
+      filepath: join(dataPath, 'fips.csv'),
+    })
+    await csvExporter.export(project)
 
-  const zipExporter = new scraper.ZipExporter({
-    filepath: join(dataPath, 'data.zip'),
-  })
-  await zipExporter.export(project)
-})
+    const zipExporter = new scraper.ZipExporter({
+      filepath: join(dataPath, 'data.zip'),
+    })
+    await zipExporter.export(project)
+  },
+)

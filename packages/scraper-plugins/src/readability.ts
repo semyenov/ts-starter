@@ -1,7 +1,14 @@
-import { Plugin } from '@get-set-fetch/scraper'
-import { Readability } from '@mozilla/readability'
+import {
+  Plugin,
+} from '@get-set-fetch/scraper'
+import {
+  Readability,
+} from '@mozilla/readability'
 
-import type { Project, Resource } from '@get-set-fetch/scraper'
+import type {
+  Project,
+  Resource,
+} from '@get-set-fetch/scraper'
 
 export class ReadabilityPlugin extends Plugin {
   opts = {
@@ -14,11 +21,16 @@ export class ReadabilityPlugin extends Plugin {
 
     console.log(project)
 
-    return (/html/i).test(resource.contentType)
+    return (/html/i).test(
+      resource.contentType,
+    )
   }
 
   apply(_project: Project, resource: Resource) {
-    const article = new Readability(document).parse()
+    const article = new Readability(
+      document,
+    )
+      .parse()
     if (article)
       console.log(resource)
   }

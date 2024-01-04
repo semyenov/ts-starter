@@ -1,11 +1,19 @@
 #!/usr/bin/env node
 
-import { readFile } from 'node:fs/promises'
-import { argv } from 'node:process'
+import {
+  readFile,
+} from 'node:fs/promises'
+import {
+  argv,
+} from 'node:process'
 
-import { consola } from 'consola'
+import {
+  consola,
+} from 'consola'
 
-import { scrape } from '../dist/esm/index.mjs'
+import {
+  scrape,
+} from '../dist/esm/index.mjs'
 
 const logger = consola.create({ defaults: { tag: 'scraper-cli' } })
 

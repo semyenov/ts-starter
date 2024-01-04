@@ -1,7 +1,15 @@
-import type { PoolConfiguration } from 'lightning-pool'
-import type { Buffer } from 'node:buffer'
-import type { PuppeteerLaunchOptions } from 'puppeteer'
-import type { RedisClientOptions } from 'redis'
+import type {
+  PoolConfiguration,
+} from 'lightning-pool'
+import type {
+  Buffer,
+} from 'node:buffer'
+import type {
+  PuppeteerLaunchOptions,
+} from 'puppeteer'
+import type {
+  RedisClientOptions,
+} from 'redis'
 
 export type PipelineType = 'web-scraper'
 export type PipelineFunc = (
@@ -11,10 +19,10 @@ export type PipelineFunc = (
 export type Pipelines = Record<PipelineType, PipelineFunc>
 
 export type ConfigSelectorType =
-  'SelectorLink' |
-  'SelectorText' |
-  'SelectorHTML' |
-  'SelectorElement'
+  | 'SelectorLink'
+  | 'SelectorText'
+  | 'SelectorHTML'
+  | 'SelectorElement'
 export interface ConfigSelector {
   id: string
   parentSelectors: string[]
