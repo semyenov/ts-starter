@@ -6,6 +6,9 @@
 .config
 .env
 
+# Eslint
+.eslintcache
+
 # Node
 node_modules
 dist
