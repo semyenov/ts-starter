@@ -1,0 +1,1232 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "BufferEncoding": {
+      "enum": [
+        "ascii",
+        "base64",
+        "base64url",
+        "binary",
+        "hex",
+        "latin1",
+        "ucs-2",
+        "ucs2",
+        "utf-8",
+        "utf16le",
+        "utf8"
+      ],
+      "type": "string"
+    },
+    "ChromeReleaseChannel": {
+      "enum": [
+        "chrome",
+        "chrome-beta",
+        "chrome-canary",
+        "chrome-dev"
+      ],
+      "type": "string"
+    },
+    "ConfigSelector": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "multiple": {
+          "type": "boolean"
+        },
+        "parentSelectors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "regex": {
+          "type": "string"
+        },
+        "selector": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/ConfigSelectorType"
+        }
+      },
+      "type": "object"
+    },
+    "ConfigSelectorType": {
+      "enum": [
+        "SelectorElement",
+        "SelectorHTML",
+        "SelectorLink",
+        "SelectorText"
+      ],
+      "type": "string"
+    },
+    "Duplex": {
+      "description": "Duplex streams are streams that implement both the `Readable` and `Writable` interfaces.\n\nExamples of `Duplex` streams include:\n\n* `TCP sockets`\n* `zlib streams`\n* `crypto streams`",
+      "properties": {
+        "allowHalfOpen": {
+          "description": "If `false` then the stream will automatically end the writable side when the\nreadable side ends. Set initially by the `allowHalfOpen` constructor option,\nwhich defaults to `true`.\n\nThis can be changed manually to change the half-open behavior of an existing`Duplex` stream instance, but must be changed before the `'end'` event is\nemitted.",
+          "type": "boolean"
+        },
+        "closed": {
+          "description": "Is `true` after `'close'` has been emitted.",
+          "type": "boolean"
+        },
+        "destroyed": {
+          "description": "Is `true` after `readable.destroy()` has been called.",
+          "type": "boolean"
+        },
+        "errored": {
+          "$ref": "#/definitions/Error",
+          "description": "Returns error if the stream has been destroyed with an error."
+        },
+        "readable": {
+          "description": "Is `true` if it is safe to call `readable.read()`, which means\nthe stream has not been destroyed or emitted `'error'` or `'end'`.",
+          "type": "boolean"
+        },
+        "readableAborted": {
+          "description": "Returns whether the stream was destroyed or errored before emitting `'end'`.",
+          "type": "boolean"
+        },
+        "readableDidRead": {
+          "description": "Returns whether `'data'` has been emitted.",
+          "type": "boolean"
+        },
+        "readableEncoding": {
+          "$ref": "#/definitions/BufferEncoding",
+          "description": "Getter for the property `encoding` of a given `Readable` stream. The `encoding`property can be set using the `readable.setEncoding()` method."
+        },
+        "readableEnded": {
+          "description": "Becomes `true` when `'end'` event is emitted.",
+          "type": "boolean"
+        },
+        "readableFlowing": {
+          "description": "This property reflects the current state of a `Readable` stream as described\nin the `Three states` section.",
+          "type": "boolean"
+        },
+        "readableHighWaterMark": {
+          "description": "Returns the value of `highWaterMark` passed when creating this `Readable`.",
+          "type": "number"
+        },
+        "readableLength": {
+          "description": "This property contains the number of bytes (or objects) in the queue\nready to be read. The value provides introspection data regarding\nthe status of the `highWaterMark`.",
+          "type": "number"
+        },
+        "readableObjectMode": {
+          "description": "Getter for the property `objectMode` of a given `Readable` stream.",
+          "type": "boolean"
+        },
+        "writable": {
+          "description": "Is `true` if it is safe to call `writable.write()`, which means\nthe stream has not been destroyed, errored, or ended.",
+          "type": "boolean"
+        },
+        "writableCorked": {
+          "description": "Number of times `writable.uncork()` needs to be\ncalled in order to fully uncork the stream.",
+          "type": "number"
+        },
+        "writableEnded": {
+          "description": "Is `true` after `writable.end()` has been called. This property\ndoes not indicate whether the data has been flushed, for this use `writable.writableFinished` instead.",
+          "type": "boolean"
+        },
+        "writableFinished": {
+          "description": "Is set to `true` immediately before the `'finish'` event is emitted.",
+          "type": "boolean"
+        },
+        "writableHighWaterMark": {
+          "description": "Return the value of `highWaterMark` passed when creating this `Writable`.",
+          "type": "number"
+        },
+        "writableLength": {
+          "description": "This property contains the number of bytes (or objects) in the queue\nready to be written. The value provides introspection data regarding\nthe status of the `highWaterMark`.",
+          "type": "number"
+        },
+        "writableNeedDrain": {
+          "description": "Is `true` if the stream's buffer has been full and stream will emit `'drain'`.",
+          "type": "boolean"
+        },
+        "writableObjectMode": {
+          "description": "Getter for the property `objectMode` of a given `Writable` stream.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "Error": {
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "stack": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "KeyObject": {
+      "properties": {
+        "passphrase": {
+          "description": "Optional passphrase.",
+          "type": "string"
+        },
+        "pem": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Private keys in PEM format."
+        }
+      },
+      "type": "object"
+    },
+    "OnReadOpts": {
+      "properties": {
+        "buffer": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Options": {
+      "properties": {
+        "acquireTimeoutMillis": {
+          "type": "number"
+        },
+        "autostart": {
+          "type": "boolean"
+        },
+        "evictionRunIntervalMillis": {
+          "type": "number"
+        },
+        "fifo": {
+          "type": "boolean"
+        },
+        "idleTimeoutMillis": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "maxWaitingClients": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "numTestsPerEvictionRun": {
+          "type": "number"
+        },
+        "priorityRange": {
+          "type": "number"
+        },
+        "softIdleTimeoutMillis": {
+          "type": "number"
+        },
+        "testOnBorrow": {
+          "type": "boolean"
+        },
+        "testOnReturn": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "Partial<IpcSocketConnectOpts>": {
+      "properties": {
+        "onread": {
+          "$ref": "#/definitions/OnReadOpts",
+          "description": "If specified, incoming data is stored in a single buffer and passed to the supplied callback when data arrives on the socket.\nNote: this will cause the streaming functionality to not provide any data, however events like 'error', 'end', and 'close' will\nstill be emitted as normal and methods like pause() and resume() will also behave as expected."
+        },
+        "path": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Partial<TcpSocketConnectOpts>": {
+      "properties": {
+        "autoSelectFamily": {
+          "type": "boolean"
+        },
+        "autoSelectFamilyAttemptTimeout": {
+          "type": "number"
+        },
+        "family": {
+          "type": "number"
+        },
+        "hints": {
+          "type": "number"
+        },
+        "host": {
+          "type": "string"
+        },
+        "keepAlive": {
+          "type": "boolean"
+        },
+        "keepAliveInitialDelay": {
+          "type": "number"
+        },
+        "localAddress": {
+          "type": "string"
+        },
+        "localPort": {
+          "type": "number"
+        },
+        "lookup": {
+          "type": "object"
+        },
+        "noDelay": {
+          "type": "boolean"
+        },
+        "onread": {
+          "$ref": "#/definitions/OnReadOpts",
+          "description": "If specified, incoming data is stored in a single buffer and passed to the supplied callback when data arrives on the socket.\nNote: this will cause the streaming functionality to not provide any data, however events like 'error', 'end', and 'close' will\nstill be emitted as normal and methods like pause() and resume() will also behave as expected."
+        },
+        "port": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "PoolConfiguration": {
+      "properties": {
+        "acquireMaxRetries": {
+          "type": "number"
+        },
+        "acquireRetryWait": {
+          "type": "number"
+        },
+        "acquireTimeoutMillis": {
+          "type": "number"
+        },
+        "fifo": {
+          "type": "boolean"
+        },
+        "houseKeepInterval": {
+          "type": "number"
+        },
+        "idleTimeoutMillis": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "maxQueue": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "minIdle": {
+          "type": "number"
+        },
+        "validation": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "Product": {
+      "description": "Supported products.",
+      "enum": [
+        "chrome",
+        "firefox"
+      ],
+      "type": "string"
+    },
+    "PuppeteerLaunchOptions": {
+      "properties": {
+        "args": {
+          "description": "Additional command line arguments to pass to the browser instance.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "channel": {
+          "$ref": "#/definitions/ChromeReleaseChannel",
+          "description": "Chrome Release Channel"
+        },
+        "debuggingPort": {
+          "description": "Specify the debugging port number to use",
+          "type": "number"
+        },
+        "defaultViewport": {
+          "$ref": "#/definitions/Viewport",
+          "description": "Sets the viewport for each page."
+        },
+        "devtools": {
+          "description": "Whether to auto-open a DevTools panel for each tab. If this is set to\n`true`, then `headless` will be forced to `false`.",
+          "type": "boolean"
+        },
+        "dumpio": {
+          "description": "If true, pipes the browser process stdout and stderr to `process.stdout`\nand `process.stderr`.",
+          "type": "boolean"
+        },
+        "env": {
+          "$ref": "#/definitions/Record<string,string>",
+          "description": "Specify environment variables that will be visible to the browser."
+        },
+        "executablePath": {
+          "description": "Path to a browser executable to use instead of the bundled Chromium. Note\nthat Puppeteer is only guaranteed to work with the bundled Chromium, so use\nthis setting at your own risk.",
+          "type": "string"
+        },
+        "extraPrefsFirefox": {
+          "$ref": "#/definitions/Record<string,unknown>",
+          "description": "{@link https://searchfox.org/mozilla-release/source/modules/libpref/init/all.js | Additional preferences} that can be passed when launching with Firefox."
+        },
+        "handleSIGHUP": {
+          "description": "Close the browser process on `SIGHUP`.",
+          "type": "boolean"
+        },
+        "handleSIGINT": {
+          "description": "Close the browser process on `Ctrl+C`.",
+          "type": "boolean"
+        },
+        "handleSIGTERM": {
+          "description": "Close the browser process on `SIGTERM`.",
+          "type": "boolean"
+        },
+        "headless": {
+          "description": "Whether to run the browser in headless mode.",
+          "enum": [
+            false,
+            "new",
+            true
+          ]
+        },
+        "ignoreDefaultArgs": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "If `true`, do not use `puppeteer.defaultArgs()` when creating a browser. If\nan array is provided, these args will be filtered out. Use this with care -\nyou probably want the default arguments Puppeteer uses."
+        },
+        "ignoreHTTPSErrors": {
+          "description": "Whether to ignore HTTPS errors during navigation.",
+          "type": "boolean"
+        },
+        "pipe": {
+          "description": "Connect to a browser over a pipe instead of a WebSocket.",
+          "type": "boolean"
+        },
+        "product": {
+          "$ref": "#/definitions/Product",
+          "description": "Which browser to launch."
+        },
+        "protocolTimeout": {
+          "description": "Timeout setting for individual protocol (CDP) calls.",
+          "type": "number"
+        },
+        "slowMo": {
+          "description": "Slows down Puppeteer operations by the specified amount of milliseconds to\naid debugging.",
+          "type": "number"
+        },
+        "targetFilter": {
+          "description": "Callback to decide if Puppeteer should connect to a given target or not.",
+          "type": "object"
+        },
+        "timeout": {
+          "description": "Maximum time in milliseconds to wait for the browser to start.\nPass `0` to disable the timeout.",
+          "type": "number"
+        },
+        "userDataDir": {
+          "description": "Path to a user data directory.\n{@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}\nfor more info.",
+          "type": "string"
+        },
+        "waitForInitialPage": {
+          "description": "Whether to wait for the initial page to be ready.\nUseful when a user explicitly disables that (e.g. `--no-startup-window` for Chrome).",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "PxfObject": {
+      "properties": {
+        "buf": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PFX or PKCS12 encoded private key and certificate chain."
+        },
+        "passphrase": {
+          "description": "Optional passphrase.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Record<string,string>": {
+      "type": "object"
+    },
+    "Record<string,unknown>": {
+      "type": "object"
+    },
+    "RedisClientOptions<RedisModules,RedisFunctions,RedisScripts>": {
+      "properties": {
+        "commandsQueueMaxLength": {
+          "description": "Maximum length of the client's internal command queue",
+          "type": "number"
+        },
+        "database": {
+          "description": "Redis database number (see [`SELECT`](https://redis.io/commands/select) command)",
+          "type": "number"
+        },
+        "disableOfflineQueue": {
+          "description": "When `true`, commands are rejected when the client is reconnecting.\nWhen `false`, commands are queued for execution after reconnection.",
+          "type": "boolean"
+        },
+        "functions": {
+          "$ref": "#/definitions/RedisFunctions"
+        },
+        "isolationPoolOptions": {
+          "$ref": "#/definitions/Options"
+        },
+        "legacyMode": {
+          "type": "boolean"
+        },
+        "modules": {
+          "$ref": "#/definitions/RedisModules"
+        },
+        "name": {
+          "description": "Client name ([see `CLIENT SETNAME`](https://redis.io/commands/client-setname))",
+          "type": "string"
+        },
+        "password": {
+          "description": "ACL password or the old \"--requirepass\" password",
+          "type": "string"
+        },
+        "pingInterval": {
+          "description": "Send `PING` command at interval (in ms).\nUseful with Redis deployments that do not use TCP Keep-Alive.",
+          "type": "number"
+        },
+        "readonly": {
+          "description": "Connect in [`READONLY`](https://redis.io/commands/readonly) mode",
+          "type": "boolean"
+        },
+        "scripts": {
+          "$ref": "#/definitions/RedisScripts"
+        },
+        "socket": {
+          "$ref": "#/definitions/RedisSocketOptions",
+          "description": "Socket connection properties"
+        },
+        "url": {
+          "description": "`redis[s]://[[username][:password]@][host][:port][/db-number]`\nSee [`redis`](https://www.iana.org/assignments/uri-schemes/prov/redis) and [`rediss`](https://www.iana.org/assignments/uri-schemes/prov/rediss) IANA registration for more details",
+          "type": "string"
+        },
+        "username": {
+          "description": "ACL username ([see ACL guide](https://redis.io/topics/acl))",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "RedisCommand": {
+      "properties": {
+        "FIRST_KEY_INDEX": {
+          "type": [
+            "number",
+            "object"
+          ]
+        },
+        "IS_READ_ONLY": {
+          "type": "boolean"
+        },
+        "TRANSFORM_LEGACY_REPLY": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "RedisFunction": {
+      "properties": {
+        "FIRST_KEY_INDEX": {
+          "type": [
+            "number",
+            "object"
+          ]
+        },
+        "IS_READ_ONLY": {
+          "type": "boolean"
+        },
+        "NUMBER_OF_KEYS": {
+          "type": "number"
+        },
+        "TRANSFORM_LEGACY_REPLY": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "RedisFunctionLibrary": {
+      "additionalProperties": {
+        "$ref": "#/definitions/RedisFunction"
+      },
+      "type": "object"
+    },
+    "RedisFunctions": {
+      "additionalProperties": {
+        "$ref": "#/definitions/RedisFunctionLibrary"
+      },
+      "type": "object"
+    },
+    "RedisModule": {
+      "additionalProperties": {
+        "$ref": "#/definitions/RedisCommand"
+      },
+      "type": "object"
+    },
+    "RedisModules": {
+      "additionalProperties": {
+        "$ref": "#/definitions/RedisModule"
+      },
+      "type": "object"
+    },
+    "RedisScript": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/RedisScriptConfig"
+        },
+        {
+          "$ref": "#/definitions/SHA1"
+        }
+      ]
+    },
+    "RedisScriptConfig": {
+      "properties": {
+        "FIRST_KEY_INDEX": {
+          "type": [
+            "number",
+            "object"
+          ]
+        },
+        "IS_READ_ONLY": {
+          "type": "boolean"
+        },
+        "NUMBER_OF_KEYS": {
+          "type": "number"
+        },
+        "SCRIPT": {
+          "type": "string"
+        },
+        "TRANSFORM_LEGACY_REPLY": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "RedisScripts": {
+      "additionalProperties": {
+        "$ref": "#/definitions/RedisScript"
+      },
+      "type": "object"
+    },
+    "RedisSocketCommonOptions": {
+      "properties": {
+        "connectTimeout": {
+          "description": "Connection Timeout (in milliseconds)",
+          "type": "number"
+        },
+        "keepAlive": {
+          "anyOf": [
+            {
+              "enum": [
+                false
+              ],
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "description": "Toggle [`keep-alive`](https://nodejs.org/api/net.html#net_socket_setkeepalive_enable_initialdelay)"
+        },
+        "noDelay": {
+          "description": "Toggle [`Nagle's algorithm`](https://nodejs.org/api/net.html#net_socket_setnodelay_nodelay)",
+          "type": "boolean"
+        },
+        "reconnectStrategy": {
+          "anyOf": [
+            {
+              "enum": [
+                false
+              ],
+              "type": "boolean"
+            },
+            {
+              "type": [
+                "number",
+                "object"
+              ]
+            }
+          ],
+          "description": "When the socket closes unexpectedly (without calling `.quit()`/`.disconnect()`), the client uses `reconnectStrategy` to decide what to do. The following values are supported:\n1. `false` -> do not reconnect, close the client and flush the command queue.\n2. `number` -> wait for `X` milliseconds before reconnecting.\n3. `(retries: number, cause: Error) => false | number | Error` -> `number` is the same as configuring a `number` directly, `Error` is the same as `false`, but with a custom error.\nDefaults to `retries => Math.min(retries * 50, 500)`"
+        }
+      },
+      "type": "object"
+    },
+    "RedisSocketOptions": {
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/RedisSocketCommonOptions"
+            },
+            {
+              "$ref": "#/definitions/Partial<TcpSocketConnectOpts>"
+            },
+            {
+              "properties": {
+                "tls": {
+                  "enum": [
+                    false
+                  ],
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/RedisSocketCommonOptions"
+            },
+            {
+              "$ref": "#/definitions/Partial<IpcSocketConnectOpts>"
+            },
+            {
+              "properties": {
+                "tls": {
+                  "enum": [
+                    false
+                  ],
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/RedisSocketCommonOptions"
+            },
+            {
+              "$ref": "#/definitions/RedisTlsSocketOptions"
+            }
+          ]
+        }
+      ]
+    },
+    "RedisTlsSocketOptions": {
+      "properties": {
+        "ALPNProtocols": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^[0-9]+$": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "An array of strings or a Buffer naming possible ALPN protocols.\n(Protocols should be ordered by their priority.)"
+        },
+        "SNICallback": {
+          "description": "SNICallback(servername, cb) <Function> A function that will be\ncalled if the client supports SNI TLS extension. Two arguments\nwill be passed when called: servername and cb. SNICallback should\ninvoke cb(null, ctx), where ctx is a SecureContext instance.\n(tls.createSecureContext(...) can be used to get a proper\nSecureContext.) If SNICallback wasn't provided the default callback\nwith high-level API will be used (see below).",
+          "type": "object"
+        },
+        "ca": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Optionally override the trusted CA certificates. Default is to trust\nthe well-known CAs curated by Mozilla. Mozilla's CAs are completely\nreplaced when CAs are explicitly specified using this option."
+        },
+        "cert": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Cert chains in PEM format. One cert chain should be provided per\nprivate key. Each cert chain should consist of the PEM formatted\ncertificate for a provided private key, followed by the PEM\nformatted intermediate certificates (if any), in order, and not\nincluding the root CA (the root CA must be pre-known to the peer,\nsee ca). When providing multiple cert chains, they do not have to\nbe in the same order as their private keys in key. If the\nintermediate certificates are not provided, the peer will not be\nable to validate the certificate, and the handshake will fail."
+        },
+        "checkServerIdentity": {
+          "description": "Verifies the certificate `cert` is issued to `hostname`.\n\nReturns [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) object, populating it with `reason`, `host`, and `cert` on\nfailure. On success, returns [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type).\n\nThis function is intended to be used in combination with the`checkServerIdentity` option that can be passed to {@link connect} and as\nsuch operates on a `certificate object`. For other purposes, consider using `x509.checkHost()` instead.\n\nThis function can be overwritten by providing an alternative function as the`options.checkServerIdentity` option that is passed to `tls.connect()`. The\noverwriting function can call `tls.checkServerIdentity()` of course, to augment\nthe checks done with additional verification.\n\nThis function is only called if the certificate passed all other checks, such as\nbeing issued by trusted CA (`options.ca`).\n\nEarlier versions of Node.js incorrectly accepted certificates for a given`hostname` if a matching `uniformResourceIdentifier` subject alternative name\nwas present (see [CVE-2021-44531](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44531)). Applications that wish to accept`uniformResourceIdentifier` subject alternative names can use\na custom`options.checkServerIdentity` function that implements the desired behavior.",
+          "type": "object"
+        },
+        "ciphers": {
+          "description": "Cipher suite specification, replacing the default. For more\ninformation, see modifying the default cipher suite. Permitted\nciphers can be obtained via tls.getCiphers(). Cipher names must be\nuppercased in order for OpenSSL to accept them.",
+          "type": "string"
+        },
+        "clientCertEngine": {
+          "description": "Name of an OpenSSL engine which can provide the client certificate.",
+          "type": "string"
+        },
+        "crl": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PEM formatted CRLs (Certificate Revocation Lists)."
+        },
+        "dhparam": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "`'auto'` or custom Diffie-Hellman parameters, required for non-ECDHE perfect forward secrecy.\nIf omitted or invalid, the parameters are silently discarded and DHE ciphers will not be available.\nECDHE-based perfect forward secrecy will still be available."
+        },
+        "ecdhCurve": {
+          "description": "A string describing a named curve or a colon separated list of curve\nNIDs or names, for example P-521:P-384:P-256, to use for ECDH key\nagreement. Set to auto to select the curve automatically. Use\ncrypto.getCurves() to obtain a list of available curve names. On\nrecent releases, openssl ecparam -list_curves will also display the\nname and description of each available elliptic curve. Default:\ntls.DEFAULT_ECDH_CURVE.",
+          "type": "string"
+        },
+        "enableTrace": {
+          "default": false,
+          "description": "When enabled, TLS packet trace information is written to `stderr`. This can be\nused to debug TLS connection problems.",
+          "type": "boolean"
+        },
+        "honorCipherOrder": {
+          "description": "Attempt to use the server's cipher suite preferences instead of the\nclient's. When true, causes SSL_OP_CIPHER_SERVER_PREFERENCE to be\nset in secureOptions",
+          "type": "boolean"
+        },
+        "host": {
+          "type": "string"
+        },
+        "key": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "$ref": "#/definitions/KeyObject"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Private keys in PEM format. PEM allows the option of private keys\nbeing encrypted. Encrypted keys will be decrypted with\noptions.passphrase. Multiple keys using different algorithms can be\nprovided either as an array of unencrypted key strings or buffers,\nor an array of objects in the form {pem: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted keys will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
+        },
+        "lookup": {
+          "type": "object"
+        },
+        "maxVersion": {
+          "$ref": "#/definitions/SecureVersion",
+          "description": "Optionally set the maximum TLS version to allow. One\nof `'TLSv1.3'`, `'TLSv1.2'`, `'TLSv1.1'`, or `'TLSv1'`. Cannot be specified along with the\n`secureProtocol` option, use one or the other.\n**Default:** `'TLSv1.3'`, unless changed using CLI options. Using\n`--tls-max-v1.2` sets the default to `'TLSv1.2'`. Using `--tls-max-v1.3` sets the default to\n`'TLSv1.3'`. If multiple of the options are provided, the highest maximum is used."
+        },
+        "minDHSize": {
+          "type": "number"
+        },
+        "minVersion": {
+          "$ref": "#/definitions/SecureVersion",
+          "description": "Optionally set the minimum TLS version to allow. One\nof `'TLSv1.3'`, `'TLSv1.2'`, `'TLSv1.1'`, or `'TLSv1'`. Cannot be specified along with the\n`secureProtocol` option, use one or the other.  It is not recommended to use\nless than TLSv1.2, but it may be required for interoperability.\n**Default:** `'TLSv1.2'`, unless changed using CLI options. Using\n`--tls-v1.0` sets the default to `'TLSv1'`. Using `--tls-v1.1` sets the default to\n`'TLSv1.1'`. Using `--tls-min-v1.3` sets the default to\n'TLSv1.3'. If multiple of the options are provided, the lowest minimum is used."
+        },
+        "passphrase": {
+          "description": "Shared passphrase used for a single private key and/or a PFX.",
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "pfx": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                      "^[0-9]+$": {
+                        "type": "number"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "$ref": "#/definitions/PxfObject"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "PFX or PKCS12 encoded private key and certificate chain. pfx is an\nalternative to providing key and cert individually. PFX is usually\nencrypted, if it is, passphrase will be used to decrypt it. Multiple\nPFX can be provided either as an array of unencrypted PFX buffers,\nor an array of objects in the form {buf: <string|buffer>[,\npassphrase: <string>]}. The object form can only occur in an array.\nobject.passphrase is optional. Encrypted PFX will be decrypted with\nobject.passphrase if provided, or options.passphrase if it is not."
+        },
+        "port": {
+          "type": "number"
+        },
+        "privateKeyEngine": {
+          "description": "Name of an OpenSSL engine to get private key from. Should be used\ntogether with privateKeyIdentifier.",
+          "type": "string"
+        },
+        "privateKeyIdentifier": {
+          "description": "Identifier of a private key managed by an OpenSSL engine. Should be\nused together with privateKeyEngine. Should not be set together with\nkey, because both options define a private key in different ways.",
+          "type": "string"
+        },
+        "rejectUnauthorized": {
+          "default": true,
+          "description": "If true the server will reject any connection which is not\nauthorized with the list of supplied CAs. This option only has an\neffect if requestCert is true.",
+          "type": "boolean"
+        },
+        "requestCert": {
+          "description": "If true the server will request a certificate from clients that\nconnect and attempt to verify that certificate. Defaults to\nfalse.",
+          "type": "boolean"
+        },
+        "secureContext": {
+          "$ref": "#/definitions/SecureContext",
+          "description": "An optional TLS context object from tls.createSecureContext()"
+        },
+        "secureOptions": {
+          "description": "Optionally affect the OpenSSL protocol behavior, which is not\nusually necessary. This should be used carefully if at all! Value is\na numeric bitmask of the SSL_OP_* options from OpenSSL Options",
+          "type": "number"
+        },
+        "secureProtocol": {
+          "description": "Legacy mechanism to select the TLS protocol version to use, it does\nnot support independent control of the minimum and maximum version,\nand does not support limiting the protocol to TLSv1.3. Use\nminVersion and maxVersion instead. The possible values are listed as\nSSL_METHODS, use the function names as strings. For example, use\n'TLSv1_1_method' to force TLS version 1.1, or 'TLS_method' to allow\nany TLS protocol version up to TLSv1.3. It is not recommended to use\nTLS versions less than 1.2, but it may be required for\ninteroperability. Default: none, see minVersion.",
+          "type": "string"
+        },
+        "servername": {
+          "type": "string"
+        },
+        "session": {
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "sessionIdContext": {
+          "description": "Opaque identifier used by servers to ensure session state is not\nshared between applications. Unused by clients.",
+          "type": "string"
+        },
+        "sessionTimeout": {
+          "description": "The number of seconds after which a TLS session created by the\nserver will no longer be resumable. See Session Resumption for more\ninformation. Default: 300.",
+          "type": "number"
+        },
+        "sigalgs": {
+          "description": "Colon-separated list of supported signature algorithms. The list\ncan contain digest algorithms (SHA256, MD5 etc.), public key\nalgorithms (RSA-PSS, ECDSA etc.), combination of both (e.g\n'RSA+SHA384') or TLS v1.3 scheme names (e.g. rsa_pss_pss_sha512).",
+          "type": "string"
+        },
+        "socket": {
+          "$ref": "#/definitions/Duplex"
+        },
+        "ticketKeys": {
+          "additionalProperties": false,
+          "description": "48-bytes of cryptographically strong pseudo-random data.\nSee Session Resumption for more information.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "timeout": {
+          "type": "number"
+        },
+        "tls": {
+          "enum": [
+            true
+          ],
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "SHA1": {
+      "properties": {
+        "SHA1": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "SecureContext": {
+      "properties": {
+        "context": {}
+      },
+      "type": "object"
+    },
+    "SecureVersion": {
+      "enum": [
+        "TLSv1",
+        "TLSv1.1",
+        "TLSv1.2",
+        "TLSv1.3"
+      ],
+      "type": "string"
+    },
+    "Viewport": {
+      "description": "Sets the viewport of the page.",
+      "properties": {
+        "deviceScaleFactor": {
+          "description": "Specify device scale factor.\nSee {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio | devicePixelRatio} for more info.",
+          "type": "number"
+        },
+        "hasTouch": {
+          "description": "Specify if the viewport supports touch events.",
+          "type": "boolean"
+        },
+        "height": {
+          "description": "The page height in pixels.",
+          "type": "number"
+        },
+        "isLandscape": {
+          "description": "Specifies if the viewport is in landscape mode.",
+          "type": "boolean"
+        },
+        "isMobile": {
+          "description": "Whether the `meta viewport` tag is taken into account.",
+          "type": "boolean"
+        },
+        "width": {
+          "description": "The page width in pixels.",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "properties": {
+    "_id": {
+      "type": "string"
+    },
+    "browser": {
+      "$ref": "#/definitions/PuppeteerLaunchOptions"
+    },
+    "parallel": {
+      "type": "number"
+    },
+    "pipeline": {
+      "enum": [
+        "web-scraper"
+      ],
+      "type": "string"
+    },
+    "pool": {
+      "$ref": "#/definitions/PoolConfiguration"
+    },
+    "selectors": {
+      "items": {
+        "$ref": "#/definitions/ConfigSelector"
+      },
+      "type": "array"
+    },
+    "startUrl": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "store": {
+      "$ref": "#/definitions/RedisClientOptions<RedisModules,RedisFunctions,RedisScripts>"
+    },
+    "timeout": {
+      "type": "number"
+    }
+  },
+  "type": "object"
+}

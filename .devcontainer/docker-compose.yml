@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/typescript-node:0-20
+    restart: unless-stopped
+    command: tail -f /dev/null
+    environment:
+      - NODE_ENV=development
+      - NITRO_PORT=3000
+    ports:
+      - 3000:3000
+    volumes:
+      - ../..:/workspaces:cached
+
+  redis:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    restart: unless-stopped
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

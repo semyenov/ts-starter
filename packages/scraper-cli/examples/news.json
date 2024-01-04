@@ -1,0 +1,55 @@
+{
+  "$schema": "../schema.json",
+
+  "_id": "news",
+  "parallel": 1,
+  "timeout": 1000,
+  "pipeline": "web-scraper",
+
+  "startUrl": ["http://kremlin.ru/acts/news"],
+  "selectors": [
+    {
+      "id": "001:link",
+      "multiple": true,
+      "parentSelectors": ["_root"],
+      "selector": ".hentry__title a",
+      "type": "SelectorLink"
+    },
+    {
+      "id": "002:title",
+      "multiple": false,
+      "parentSelectors": ["001:link"],
+      "regex": "",
+      "selector": "h1[itemprop='name']",
+      "type": "SelectorText"
+    },
+    {
+      "id": "002:description",
+      "multiple": false,
+      "parentSelectors": ["001:link"],
+      "regex": "",
+      "selector": "[itemprop='description'] p",
+      "type": "SelectorText"
+    },
+    {
+      "id": "002:meta",
+      "multiple": false,
+      "parentSelectors": ["001:link"],
+      "regex": "",
+      "selector": "div.read__meta",
+      "type": "SelectorText"
+    },
+    {
+      "id": "002:text",
+      "multiple": false,
+      "parentSelectors": ["001:link"],
+      "regex": "",
+      "selector": "[itemprop='articleBody'] > p",
+      "type": "SelectorText"
+    }
+  ],
+
+  "browser": {
+    "executablePath": ""
+  }
+}

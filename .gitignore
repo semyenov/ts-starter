@@ -1,0 +1,26 @@
+# Nuxt
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+.config
+.env
+dist
+core
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# VIM
+**/*~
+secret.pem
+open.pem
+.DS_Store
